@@ -10,6 +10,14 @@ const db = new Firestore({
 });
 
 async function signUp(req: Request, res: Response) {
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).send('');
+  }
+
   if (req.url !== '/') {
     return res.status(404).json({error: 'not found'});
   }
