@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button, Container, FormLabel, Input, Flex, Heading } from '@chakra-ui/react';
 import { signUpNewUserWithEmailAndPassword } from '../services/firebase';
+import { postNewUserToDb } from '../services/api';
+import { UserData } from '../interfaces/IuserData';
 
 function SignUp() {
   const [email, setEmail] = useState<string>('');
@@ -10,12 +12,21 @@ function SignUp() {
     e.preventDefault();
 
     signUpNewUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        console.log(userCredentials);
+      .then(({ user }) => {
+        const userData: UserData = {
+          email: user?.email,
+          uid: user?.uid,
+        };
+
+        return postNewUserToDb(userData);
+      })
+      .then(() => {
         setEmail('');
         setPassword('');
       })
-      .catch((error) => console.log('error: ', error));
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
