@@ -1,8 +1,15 @@
 import { useState } from 'react';
-import { Button, Container, FormLabel, Input, Flex, Heading } from '@chakra-ui/react';
+import { Container, Heading, Text } from '@chakra-ui/react';
 import { signUpNewUserWithEmailAndPassword } from '../services/firebase';
 import { postNewUserToDb } from '../services/api';
 import { UserData } from '../interfaces/IuserData';
+
+import FormInput from '../components/Form/FormInput';
+import FormButton from '../components/Form/FormButton';
+import Form from '../components/Form/Form';
+import Link from '../components/shared/Link';
+
+import { ROUTES } from '../utils/constants';
 
 function SignUp() {
   const [email, setEmail] = useState<string>('');
@@ -38,53 +45,34 @@ function SignUp() {
       alignItems="center"
       height="80vh"
     >
-      <Container
-        as="form"
-        display="flex"
-        flexDir="column"
-        alignItems="center"
-        border="1px"
-        borderColor="gray.200"
-        p={4}
-        borderRadius="md"
-        shadow="md"
-        onSubmit={handleSubmit}
-      >
+      <Form onSubmit={handleSubmit}>
         <Heading as="h2" mb={4}>
-          Sign up with us!
+          Sign up with us
         </Heading>
 
-        <Flex alignItems="center" w="100%" justifyContent="space-between">
-          <FormLabel htmlFor="email" width={32} m={0} p={0}>
-            Email
-          </FormLabel>
-          <Input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="example@email.com"
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
-          />
-        </Flex>
+        <FormInput
+          label="Email"
+          id="email"
+          placeholder="example@email.com"
+          value={email}
+          onChange={({ target }) => setEmail(target.value)}
+        />
 
-        <Flex alignItems="center" w="100%" mt={4}>
-          <FormLabel htmlFor="password" width={32} m={0} p={0}>
-            Passowrd
-          </FormLabel>
-          <Input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </Flex>
-        <Button type="submit" mt={4} shadow="md" colorScheme="blue">
-          Sign up
-        </Button>
-      </Container>
+        <FormInput
+          label="Password"
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+
+        <FormButton type="submit">Sign Up</FormButton>
+
+        <Text mt={2}>
+          Already have an account? <Link to={ROUTES.login}>Log in</Link>
+        </Text>
+      </Form>
     </Container>
   );
 }
