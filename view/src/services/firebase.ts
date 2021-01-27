@@ -1,6 +1,9 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
+import { IUserData, IUser, IDbUser } from '../types/IUser';
 import { firebaseConfig } from '../utils/config';
+import { postNewUserToDb } from './api';
 
 firebase.initializeApp(firebaseConfig);
 
@@ -14,11 +17,9 @@ export async function signUpNewUserWithEmailAndPassword(userData: IUserData): Pr
   return postedUser;
 }
 
-export async function logInWithEmailAndPassowrd(
-  email: string,
-  password: string,
-): Promise<firebase.auth.UserCredential> {
-  return await firebase.auth().signInWithEmailAndPassword(email, password);
+export async function getUserFromDb(uid: string): Promise<IDbUser> {
+  return (await firebase.firestore().collection('users').doc(uid).get()).data() as IDbUser;
+}
 }
 
 export function getCurrentUser(): firebase.User | null {
