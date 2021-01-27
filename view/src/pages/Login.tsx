@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { logInWithEmailAndPassowrd } from '../services/firebase';
 import { Redirect, useHistory } from 'react-router-dom';
+import { logInWithEmailAndPassowrd } from '../services/firebase';
 import { ROUTES } from '../utils/constants';
 
 import FormInput from '../components/Form/FormInput';
@@ -26,7 +26,7 @@ function Login() {
     setIsLoading(true);
 
     logInWithEmailAndPassowrd(email, password)
-      .then(({ user }) => {
+      .then((user) => {
         setEmail('');
         setPassword('');
         setIsLoading(false);
@@ -60,9 +60,11 @@ function Login() {
         <FormInput
           label="Email"
           id="email"
+          type="email"
           placeholder="example@email.com"
           value={email}
           onChange={({ target }) => setEmail(target.value)}
+          required
         />
 
         <FormInput
@@ -72,6 +74,7 @@ function Login() {
           placeholder="Enter your password"
           value={password}
           onChange={({ target }) => setPassword(target.value)}
+          required
         />
 
         <FormButton type="submit" isLoading={isLoading}>
@@ -79,7 +82,8 @@ function Login() {
         </FormButton>
 
         <Text mt={2}>
-          Don't have an account yet? <Link to={ROUTES.signup}>Sign up</Link>
+          Don't have an account yet?
+          <Link to={ROUTES.signup}>Sign up</Link>
         </Text>
       </Form>
     </Container>
