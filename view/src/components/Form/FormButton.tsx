@@ -1,10 +1,10 @@
 import { Button } from '@chakra-ui/react';
 
-interface Props {
+type Props = {
   type?: 'button' | 'submit';
   children: string;
   isLoading?: boolean;
-}
+};
 
 function FormButton({ type = 'button', children, isLoading = false }: Props) {
   return (

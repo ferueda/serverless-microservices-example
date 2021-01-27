@@ -1,10 +1,10 @@
 import { Container } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-interface Props {
+type Props = {
   children: ReactNode;
   onSubmit: (event: React.FormEvent<HTMLDivElement>) => void;
-}
+};
 
 function Form({ children, onSubmit }: Props) {
   return (

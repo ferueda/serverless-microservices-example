@@ -1,6 +1,6 @@
 import { FormLabel, Input, Flex } from '@chakra-ui/react';
 
-interface Props {
+type Props = {
   label: string;
   id: string;
   name?: string;
@@ -8,9 +8,19 @@ interface Props {
   placeholder: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+  required?: boolean;
+};
 
-function FormInput({ label, id, name = id, type = 'text', placeholder, value, onChange }: Props) {
+function FormInput({
+  label,
+  id,
+  name = id,
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  required,
+}: Props) {
   return (
     <Flex alignItems="center" w="100%" justifyContent="space-between" mb={4}>
       <FormLabel htmlFor={id} width={32} m={0} p={0}>
@@ -23,6 +33,7 @@ function FormInput({ label, id, name = id, type = 'text', placeholder, value, on
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        isRequired={required}
       />
     </Flex>
   );
