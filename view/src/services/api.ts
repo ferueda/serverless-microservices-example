@@ -1,7 +1,7 @@
 import { ENDPOINTS } from '../utils/constants';
-import { UserData } from '../interfaces/IuserData';
+import { IUser } from '../types/IUser';
 
-export async function postNewUserToDb(userData: UserData) {
+export async function postNewUserToDb(userData: IUser): Promise<IUser> {
   const res = await fetch(ENDPOINTS.dev, {
     method: 'POST',
     mode: 'cors',
