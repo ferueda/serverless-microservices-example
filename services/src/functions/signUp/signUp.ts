@@ -28,12 +28,14 @@ async function signUp(req: Request, res: Response) {
 
   const body: RequestBody = req.body;
 
-  if (!body.uid || !body.email) {
+  if (!body.uid || !body.email || !body.first_name || !body.last_name) {
     return res.status(400).json({error: 'bad request'});
   }
 
   const userData: User = {
     email: body.email,
+    first_name: body.first_name,
+    last_name: body.last_name,
   };
 
   try {
@@ -43,8 +45,10 @@ async function signUp(req: Request, res: Response) {
       return res.status(400).json({error: 'user already exists'});
     }
 
-    const addedUser = await db.collection('users').doc(body.uid).set(userData);
-    return res.json(addedUser);
+    await db.collection('users').doc(body.uid).set(userData);
+    const addedUser = (await db.collection('users').doc(body.uid).get()).data();
+
+    return res.json({...addedUser, uid: body.uid});
   } catch (error) {
     console.log(error);
     return res.status(500).json({error: 'something went wrong'});
