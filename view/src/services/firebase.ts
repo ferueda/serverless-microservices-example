@@ -20,6 +20,27 @@ export async function signUpNewUserWithEmailAndPassword(userData: IUserData): Pr
 export async function getUserFromDb(uid: string): Promise<IDbUser> {
   return (await firebase.firestore().collection('users').doc(uid).get()).data() as IDbUser;
 }
+
+export async function logInWithEmailAndPassowrd(email: string, password: string): Promise<IUser> {
+  const userCredentials: firebase.auth.UserCredential = await firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password);
+
+  if (!userCredentials.user) {
+    throw new Error('no such user');
+  }
+
+  const userUid: string = userCredentials.user.uid;
+  const userFromDb: IDbUser = await getUserFromDb(userUid);
+
+  if (!userFromDb) {
+    throw new Error('no such user');
+  }
+
+  return {
+    uid: userUid,
+    ...userFromDb,
+  };
 }
 
 export function getCurrentUser(): firebase.User | null {
