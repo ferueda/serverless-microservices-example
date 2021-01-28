@@ -5,9 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start:signUp": "functions-framework --target=signUp --set-env-vars DEV=true",
+    "start:signUp": "functions-framework --target=signUp",
     "dev:signUp": "concurrently \"tsc -w\" \"nodemon --watch ./dist/ --exec npm run start:signUp\"",
-    "deploy:signUp": "gcloud functions deploy signUp --runtime nodejs12 --trigger-http --allow-unauthenticated"
+    "deploy:signUp": "gcloud functions deploy signUp --runtime nodejs12 --trigger-http --allow-unauthenticated",
+    "start:deleteUserFromDb": "functions-framework --target=deleteUserFromDb --port 9000 --signature-type=event ",
+    "dev:deleteUserFromDb": "concurrently \"tsc -w\" \"nodemon --watch ./dist/ --exec npm run start:deleteUserFromDb\"",
+    "deploy:deleteUserFromDb": "gcloud functions deploy deleteUserFromDb --runtime nodejs12 --trigger-event providers/firebase.auth/eventTypes/user.delete"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +25,7 @@
   },
   "dependencies": {
     "@google-cloud/firestore": "^4.8.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "firebase": "^8.2.4"
   }
 }
