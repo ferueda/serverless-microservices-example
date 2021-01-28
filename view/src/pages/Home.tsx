@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { AuthContext } from '../globalState/authContext';
+import { AuthContext } from '../globalState/AuthContext';
+
 import { ROUTES } from '../utils/constants';
 
 function Home() {

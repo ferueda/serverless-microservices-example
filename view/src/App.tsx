@@ -4,16 +4,16 @@ import { Container } from '@chakra-ui/react';
 
 import Home from './pages/Home';
 import SignUp from './pages/SignUp';
-
-import Nav from './components/Nav';
 import Login from './pages/Login';
 
-import AuthContextProvider from './globalState/authContext';
+import Nav from './components/Nav';
+
+import AuthContextProvider from './globalState/AuthContext';
 
 function App() {
   return (
     <AuthContextProvider>
-      <Container maxWidth={1200} minHeight="100vh" mx="auto">
+      <Container maxWidth={1200} minHeight="100vh" mx="auto" p={0}>
         <Nav />
 
         <Container as="main" display="flex" minHeight="100%">

@@ -10,7 +10,7 @@ import Form from '../components/Form/Form';
 
 import Link from '../components/shared/Link';
 
-import { AuthContext } from '../globalState/authContext';
+import { AuthContext } from '../globalState/AuthContext';
 
 function Login() {
   const [email, setEmail] = useState<string>('f@f.cl');
@@ -34,7 +34,7 @@ function Login() {
         history.push(ROUTES.home);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setIsLoading(false);
       });
   };

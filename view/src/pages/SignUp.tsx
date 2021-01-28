@@ -11,7 +11,7 @@ import Form from '../components/Form/Form';
 
 import Link from '../components/shared/Link';
 
-import { AuthContext } from '../globalState/authContext';
+import { AuthContext } from '../globalState/AuthContext';
 import { IUserData } from '../types/IUser';
 
 function SignUp() {
@@ -47,7 +47,7 @@ function SignUp() {
         history.push(ROUTES.home);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setIsLoading(false);
       });
   };

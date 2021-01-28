@@ -5,7 +5,7 @@ import { Box, Text, Icon } from '@chakra-ui/react';
 
 import NavLink from './shared/NavLink';
 
-import { AuthContext } from '../globalState/authContext';
+import { AuthContext } from '../globalState/AuthContext';
 import { logOutCurrentUser } from '../services/firebase';
 
 import { BsFillPersonFill } from 'react-icons/bs';
