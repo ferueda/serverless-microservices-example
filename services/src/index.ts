@@ -1,3 +1,4 @@
 import signUp from './functions/signUp/signUp';
+import deleteUserFromDb from './functions/deleteUserFromDb/deleteUserFromDb';
 
-export {signUp};
+export { signUp, deleteUserFromDb };
