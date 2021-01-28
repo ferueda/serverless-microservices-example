@@ -1,8 +1,8 @@
-import {Request, Response} from 'express';
-import {Firestore} from '@google-cloud/firestore';
-import {GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID} from '../../config';
+import { Request, Response } from 'express';
+import { Firestore } from '@google-cloud/firestore';
+import { GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID } from '../../config';
 
-import {User, RequestBody} from './IsignUp';
+import { User, RequestBody } from './ISignUp';
 
 const db = new Firestore({
   keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
@@ -19,17 +19,17 @@ async function signUp(req: Request, res: Response) {
   }
 
   if (req.url !== '/') {
-    return res.status(404).json({error: 'not found'});
+    return res.status(404).json({ error: 'not found' });
   }
 
   if (req.method !== 'POST') {
-    return res.status(400).json({error: 'bad request'});
+    return res.status(400).json({ error: 'bad request' });
   }
 
   const body: RequestBody = req.body;
 
   if (!body.uid || !body.email || !body.first_name || !body.last_name) {
-    return res.status(400).json({error: 'bad request'});
+    return res.status(400).json({ error: 'bad request' });
   }
 
   const userData: User = {
@@ -39,19 +39,20 @@ async function signUp(req: Request, res: Response) {
   };
 
   try {
-    const isUser = await db.collection('users').doc(body.uid).get();
+    const userRef = db.collection('users').doc(body.uid);
+    const user = await userRef.get();
 
-    if (isUser.exists) {
-      return res.status(400).json({error: 'user already exists'});
+    if (user.exists) {
+      return res.status(400).json({ error: 'user already exists' });
     }
 
-    await db.collection('users').doc(body.uid).set(userData);
-    const addedUser = (await db.collection('users').doc(body.uid).get()).data();
+    await userRef.set(userData);
+    const addedUser = (await userRef.get()).data();
 
-    return res.json({...addedUser, uid: body.uid});
+    return res.json({ ...addedUser, uid: body.uid });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({error: 'something went wrong'});
+    console.error(error);
+    return res.status(500).json({ error: 'something went wrong' });
   }
 }
 
