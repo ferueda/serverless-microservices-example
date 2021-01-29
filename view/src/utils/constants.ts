@@ -5,6 +5,6 @@ export const ROUTES = {
 };
 
 export const ENDPOINTS = {
-  signUp: 'https://us-central1-microservices-example-302620.cloudfunctions.net/signUp',
-  dev: 'http://localhost:8080/',
+  signUp: 'http://localhost:8080/',
+  places: 'http://localhost:9000/places',
 };
