@@ -1,7 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { IUserData, IUser, IDbUser } from '../types/IUser';
+import { IUserData, IUser, IDbUser, AuthedUser } from '../types/IUser';
 import { firebaseConfig } from '../utils/config';
 import { postNewUserToDb } from './api';
 
@@ -21,7 +21,10 @@ export async function getUserFromDb(uid: string): Promise<IDbUser> {
   return (await firebase.firestore().collection('users').doc(uid).get()).data() as IDbUser;
 }
 
-export async function logInWithEmailAndPassowrd(email: string, password: string): Promise<IUser> {
+export async function logInWithEmailAndPassowrd(
+  email: string,
+  password: string,
+): Promise<AuthedUser> {
   const userCredentials: firebase.auth.UserCredential = await firebase
     .auth()
     .signInWithEmailAndPassword(email, password);
@@ -30,6 +33,7 @@ export async function logInWithEmailAndPassowrd(email: string, password: string)
     throw new Error('no such user');
   }
 
+  const authToken = await userCredentials.user.getIdToken();
   const userUid: string = userCredentials.user.uid;
   const userFromDb: IDbUser = await getUserFromDb(userUid);
 
@@ -39,6 +43,7 @@ export async function logInWithEmailAndPassowrd(email: string, password: string)
 
   return {
     uid: userUid,
+    authToken,
     ...userFromDb,
   };
 }
@@ -53,6 +58,10 @@ export async function logOutCurrentUser(): Promise<void> {
 
 export async function deleteUser(user: firebase.User): Promise<void> {
   return await user.delete();
+}
+
+export async function getPlaces() {
+  return await firebase.firestore().collection('places').get();
 }
 
 export default firebase;
