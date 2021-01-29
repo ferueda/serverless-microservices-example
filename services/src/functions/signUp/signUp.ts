@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { Firestore } from '@google-cloud/firestore';
 import { GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID } from '../../config';
 
-import { User, RequestBody } from './ISignUp';
+import { User, RequestBody } from './signUp';
 
 const db = new Firestore({
   keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
