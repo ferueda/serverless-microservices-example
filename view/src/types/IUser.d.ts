@@ -17,3 +17,11 @@ export interface IDbUser {
   first_name: string;
   last_name: string;
 }
+
+export type AuthedUser = {
+  email: string;
+  uid: string;
+  first_name: string;
+  last_name: string;
+  authToken: string;
+};
