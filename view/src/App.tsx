@@ -1,6 +1,6 @@
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { ROUTES } from './utils/constants';
-import { Container } from '@chakra-ui/react';
+import { Container, Box } from '@chakra-ui/react';
 
 import Home from './pages/Home';
 import SignUp from './pages/SignUp';
@@ -13,10 +13,10 @@ import AuthContextProvider from './globalState/AuthContext';
 function App() {
   return (
     <AuthContextProvider>
-      <Container maxWidth={1200} minHeight="100vh" mx="auto" p={0}>
+      <Box minHeight="100vh" w="100%" p={0}>
         <Nav />
 
-        <Container as="main" display="flex" minHeight="100%">
+        <Container as="main" display="flex" maxW={1200} width="100%" minHeight="94vh">
           <Switch>
             <Route exact path={ROUTES.home}>
               <Home />
@@ -35,7 +35,7 @@ function App() {
             </Route>
           </Switch>
         </Container>
-      </Container>
+      </Box>
     </AuthContextProvider>
   );
 }
