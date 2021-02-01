@@ -1,56 +1,59 @@
-import { useContext, useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { getPlaces } from '../services/api';
+import { useEffect, useState } from 'react';
+import { getPokemons } from '../services/api';
 import { Button, Container, Grid, Text, Heading } from '@chakra-ui/react';
 
-import { AuthContext } from '../globalState/AuthContext';
-import { ROUTES } from '../utils/constants';
-
-import PlaceCard from '../components/PlaceCard/PlaceCard';
+import type { Pokemon } from '../types/IPokemon';
+import PokemonCard from '../components/PokemonCard/PokemonCard';
 
 function Home() {
-  const [user] = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [places, setPlaces] = useState<any[]>([]);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [offset, setOffset] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   useEffect(() => {
     setIsLoading(true);
-    setPlaces([]);
 
-    getPlaces(user?.authToken)
+    getPokemons(offset)
       .then((res: any) => {
-        setPlaces(res.data);
+        setPokemons((oldState) => [...oldState, ...res.data]);
+        setHasMore(res.hasMore);
         setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
         setIsLoading(false);
       });
-  }, [user]);
-
-  console.log(places);
-
-  if (!user) {
-    return <Redirect to={ROUTES.login} />;
-  }
+  }, [offset]);
 
   return (
     <Container py={4} width="100%" maxW="100%">
       <Heading as="h2" color="gray.700" textAlign="center" mt={4} mb={6}>
-        My Places
+        Pokemons
       </Heading>
 
-      {isLoading && <Text textAlign="center">Loading</Text>}
-
-      <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
-        {places.map((place) => (
-          <PlaceCard key={place.name} place={place} />
+      <Grid templateColumns="repeat(auto-fit, minmax(184px, 1fr))" gap={6}>
+        {pokemons.map((pokemon) => (
+          <PokemonCard key={pokemon.id} pokemon={pokemon} />
         ))}
       </Grid>
 
-      <Button type="button" colorScheme="red" pos="fixed" right={5} top={20} zIndex={100}>
-        New Place
-      </Button>
+      {isLoading && <Text textAlign="center">Loading</Text>}
+
+      {hasMore && (
+        <Button
+          type="button"
+          colorScheme="red"
+          pos="fixed"
+          right={5}
+          top={20}
+          zIndex={100}
+          onClick={() => setOffset((state) => state + 20)}
+          isLoading={isLoading}
+        >
+          Load More
+        </Button>
+      )}
     </Container>
   );
 }
