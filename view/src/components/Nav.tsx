@@ -43,7 +43,7 @@ function Nav() {
       {user ? (
         <>
           <Box>
-            <NavLink to={ROUTES.home}>Home</NavLink>
+            <NavLink to={ROUTES.home}>Pokemons</NavLink>
           </Box>
 
           <Box d="flex" alignItems="center">
@@ -61,10 +61,16 @@ function Nav() {
           </Box>
         </>
       ) : (
-        <Box ml="auto">
-          <NavLink to={ROUTES.login}>Log In</NavLink>
-          <NavLink to={ROUTES.signup}>Sign Up</NavLink>
-        </Box>
+        <>
+          <Box>
+            <NavLink to={ROUTES.home}>Pokemons</NavLink>
+          </Box>
+
+          <Box ml="auto">
+            <NavLink to={ROUTES.login}>Log In</NavLink>
+            <NavLink to={ROUTES.signup}>Sign Up</NavLink>
+          </Box>
+        </>
       )}
     </Box>
   );
