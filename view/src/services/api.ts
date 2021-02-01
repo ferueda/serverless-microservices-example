@@ -1,5 +1,6 @@
 import { ENDPOINTS } from '../utils/constants';
-import { IUser } from '../types/IUser';
+import type { IUser } from '../types/IUser';
+import type { Pokemon } from '../types/IPokemon';
 
 export async function postNewUserToDb(userData: IUser): Promise<IUser> {
   const res = await fetch(ENDPOINTS.signUp, {
@@ -10,17 +11,28 @@ export async function postNewUserToDb(userData: IUser): Promise<IUser> {
     },
     body: JSON.stringify(userData),
   });
-  return await res.json();
+  const data = await res.json();
+
+  if (res.ok) {
+    return data;
+  } else {
+    return Promise.reject(data);
+  }
 }
 
-export async function getPlaces(token: string): Promise<any[]> {
-  const res = await fetch(ENDPOINTS.places, {
+export async function getPokemons(
+  offset: number = 0,
+): Promise<{ hasMore: boolean; count: number; data: Pokemon[] }[]> {
+  const res = await fetch(`${ENDPOINTS.pokemons}?offset=${offset}`, {
     method: 'GET',
     mode: 'cors',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
-  return await res.json();
+  const data = await res.json();
+
+  if (res.ok) {
+    return data;
+  } else {
+    return Promise.reject(data);
+  }
 }
