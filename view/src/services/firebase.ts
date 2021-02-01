@@ -1,20 +1,22 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { IUserData, IUser, IDbUser, AuthedUser } from '../types/IUser';
+import { Pokemon } from '../types/IPokemon';
+import { IUserData, IDbUser, AuthedUser } from '../types/IUser';
 import { firebaseConfig } from '../utils/config';
 import { postNewUserToDb } from './api';
 
 firebase.initializeApp(firebaseConfig);
 
-export async function signUpNewUserWithEmailAndPassword(userData: IUserData): Promise<IUser> {
+export async function signUpNewUserWithEmailAndPassword(userData: IUserData): Promise<AuthedUser> {
   const { email, password, first_name, last_name } = userData;
   const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
 
   if (!user) throw new Error('an error ocurrer while signgn up');
 
+  const authToken = await user.getIdToken();
   const postedUser = await postNewUserToDb({ email, first_name, last_name, uid: user.uid });
-  return postedUser;
+  return { authToken, ...postedUser };
 }
 
 export async function getUserFromDb(uid: string): Promise<IDbUser> {
@@ -60,8 +62,26 @@ export async function deleteUser(user: firebase.User): Promise<void> {
   return await user.delete();
 }
 
-export async function getPlaces() {
-  return await firebase.firestore().collection('places').get();
+export async function getFavorites(uid: string) {
+  return await firebase.firestore().collection('favorites').where('uid', '==', uid).get();
+}
+
+export async function addFavorite(pokemon: Pokemon, uid: string) {
+  return await firebase
+    .firestore()
+    .collection('favorites')
+    .add({ uid, ...pokemon });
+}
+
+export async function removeFavorite(pokemonId: string, uid: string) {
+  const favoriteSnapshots = await firebase
+    .firestore()
+    .collection('favorites')
+    .where('uid', '==', uid)
+    .where('id', '==', Number(pokemonId))
+    .get();
+
+  favoriteSnapshots.forEach((favorite) => favorite.ref.delete());
 }
 
 export default firebase;
