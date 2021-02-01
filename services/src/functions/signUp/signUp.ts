@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { Firestore } from '@google-cloud/firestore';
 import { GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID } from '../../config';
 
-import { User, RequestBody } from './signUp';
+import { User, RequestBody } from './types';
 
 const db = new Firestore({
   keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
@@ -49,7 +49,7 @@ async function signUp(req: Request, res: Response) {
     await userRef.set(userData);
     const addedUser = (await userRef.get()).data();
 
-    return res.json({ ...addedUser, uid: body.uid });
+    return res.status(201).json({ ...addedUser, uid: body.uid });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'something went wrong' });
