@@ -1,5 +1,5 @@
 import signUp from './functions/signUp/signUp';
 import deleteUserFromDb from './functions/deleteUserFromDb/deleteUserFromDb';
-import getPlaces from './functions/getPlaces/getPlaces';
+import getPokemons from './functions/getPokemons/getPokemons';
 
-export { signUp, deleteUserFromDb, getPlaces };
+export { signUp, deleteUserFromDb, getPokemons };
