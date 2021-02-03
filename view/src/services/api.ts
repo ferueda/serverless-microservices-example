@@ -22,7 +22,7 @@ export async function postNewUserToDb(userData: IUser): Promise<IUser> {
 
 export async function getPokemons(
   offset: number = 0,
-): Promise<{ hasMore: boolean; count: number; data: Pokemon[] }[]> {
+): Promise<{ hasMore: boolean; count: number; data: Pokemon[] }> {
   const res = await fetch(`${ENDPOINTS.pokemons}?offset=${offset}`, {
     method: 'GET',
     mode: 'cors',
