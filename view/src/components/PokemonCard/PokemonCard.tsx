@@ -1,18 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Heading, Image, HStack, Tag, Icon, Box } from '@chakra-ui/react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+
+import { addFavoritePokemon, removeFavoritePokemon } from '../../store/favorites';
 import type { AppState } from '../../store/store';
 import type { AuthState, Favorite, Favorites, Pokemon } from '../../store/types';
-import { addFavoritePokemon } from '../../store/favorites';
 
 interface Props {
   pokemon: Pokemon;
 }
 
 function PokemonCard({ pokemon }: Props) {
+  const dispatch = useDispatch();
   const { user } = useSelector<AppState, AuthState>((state) => state.auth);
   const favorites = useSelector<AppState, Favorites>((state) => state.favorites);
-  const dispatch = useDispatch();
+
   const isFavorite = favorites?.map((favorite: Favorite) => favorite.id).includes(pokemon.id);
 
   const handleAddFavorite = async () => {
@@ -22,15 +24,11 @@ function PokemonCard({ pokemon }: Props) {
     await dispatch(addFavoritePokemon(pokemon, user.uid));
   };
 
-  const handleRemoveFavorite = () => {
+  const handleRemoveFavorite = async () => {
     if (!user) return;
     if (!isFavorite) return;
 
-    // removeFavorite(String(pokemon.id), user.uid)
-    //   .then(() =>
-    //     setFavorites((state: any) => state.filter((favorite: any) => favorite.id !== pokemon.id)),
-    //   )
-    //   .catch((error) => console.log(error));
+    await dispatch(removeFavoritePokemon(String(pokemon.id), user.uid));
   };
   return (
     <Container
