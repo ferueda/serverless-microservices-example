@@ -1,29 +1,21 @@
-import { useEffect, useState } from 'react';
-import { getPokemons } from '../services/api';
-import { Button, Container, Grid, Text, Heading } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Container, Grid, Heading } from '@chakra-ui/react';
 
-import type { Pokemon } from '../types/IPokemon';
+import type { AppState } from '../store/store';
+import type { PokemonState } from '../store/types';
+import { getAllPokemons } from '../store/pokemons';
+
 import PokemonCard from '../components/PokemonCard/PokemonCard';
 
 function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [offset, setOffset] = useState<number>(0);
-  const [hasMore, setHasMore] = useState<boolean>(true);
+  const dispatch = useDispatch();
+  const { offset, status, hasMore, pokemons } = useSelector<AppState, PokemonState>(
+    (state) => state.pokemons,
+  );
 
-  useEffect(() => {
-    setIsLoading(true);
-    getPokemons(offset)
-      .then((res: any) => {
-        setPokemons((oldState) => [...oldState, ...res.data]);
-        setHasMore(res.hasMore);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
-  }, [offset]);
+  const handleMorePokemons = () => {
+    dispatch(getAllPokemons(offset));
+  };
 
   return (
     <Container py={4} width="100%" maxW="100%">
@@ -37,18 +29,15 @@ function Home() {
         ))}
       </Grid>
 
-      {isLoading && <Text textAlign="center">Loading</Text>}
-
       {hasMore && (
         <Button
           type="button"
           colorScheme="red"
-          pos="fixed"
-          right={5}
-          top={20}
-          zIndex={100}
-          onClick={() => setOffset((state) => state + 20)}
-          isLoading={isLoading}
+          onClick={handleMorePokemons}
+          isLoading={status === 'idle' || status === 'pending'}
+          d="flex"
+          mx="auto"
+          my={6}
         >
           Load More
         </Button>
