@@ -1,40 +1,36 @@
-import { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Heading, Image, HStack, Tag, Icon, Box } from '@chakra-ui/react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
-import { addFavorite, removeFavorite } from '../../services/firebase';
-import { AuthContext } from '../../globalState/AuthContext';
-import { FavContext } from '../../globalState/FavContext';
-import type { Favorite } from '../../types/IFavorites';
-import type { Pokemon } from '../../types/IPokemon';
+import type { AppState } from '../../store/store';
+import type { AuthState, Favorite, Favorites, Pokemon } from '../../store/types';
+import { addFavoritePokemon } from '../../store/favorites';
 
 interface Props {
   pokemon: Pokemon;
 }
 
 function PokemonCard({ pokemon }: Props) {
-  const [user] = useContext(AuthContext);
-  const [favorites, setFavorites] = useContext(FavContext);
-
+  const { user } = useSelector<AppState, AuthState>((state) => state.auth);
+  const favorites = useSelector<AppState, Favorites>((state) => state.favorites);
+  const dispatch = useDispatch();
   const isFavorite = favorites?.map((favorite: Favorite) => favorite.id).includes(pokemon.id);
 
-  const handleAddFavorite = () => {
+  const handleAddFavorite = async () => {
     if (!user) return;
     if (isFavorite) return;
 
-    addFavorite(pokemon, user.uid)
-      .then(() => setFavorites((state: any) => [...state, { ...pokemon, uid: user.uid }]))
-      .catch((error) => console.error(error));
+    await dispatch(addFavoritePokemon(pokemon, user.uid));
   };
 
   const handleRemoveFavorite = () => {
     if (!user) return;
     if (!isFavorite) return;
 
-    removeFavorite(String(pokemon.id), user.uid)
-      .then(() =>
-        setFavorites((state: any) => state.filter((favorite: any) => favorite.id !== pokemon.id)),
-      )
-      .catch((error) => console.log(error));
+    // removeFavorite(String(pokemon.id), user.uid)
+    //   .then(() =>
+    //     setFavorites((state: any) => state.filter((favorite: any) => favorite.id !== pokemon.id)),
+    //   )
+    //   .catch((error) => console.log(error));
   };
   return (
     <Container

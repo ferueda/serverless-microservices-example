@@ -1,7 +1,8 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
 import { Container, Heading, Text } from '@chakra-ui/react';
 import { ROUTES } from '../utils/constants';
+import { useSelector } from 'react-redux';
 
 import { signUpNewUserWithEmailAndPassword } from '../services/firebase';
 
@@ -11,8 +12,9 @@ import Form from '../components/Form/Form';
 
 import Link from '../components/shared/Link';
 
-import { AuthContext } from '../globalState/AuthContext';
-import { IUserData } from '../types/IUser';
+import type { IUserData } from '../types/IUser';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
 
 function SignUp() {
   const [email, setEmail] = useState<string>('');
@@ -21,7 +23,8 @@ function SignUp() {
   const [lastName, setLastName] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [user, setUser] = useContext(AuthContext);
+  const { user } = useSelector<AppState, AuthState>((state) => state.auth);
+
   const history = useHistory();
 
   const handleSubmit = (e: React.FormEvent<HTMLDivElement>): void => {
@@ -43,7 +46,6 @@ function SignUp() {
         setFirstName('');
         setLastName('');
         setIsLoading(false);
-        setUser(signedUpUser);
         history.push(ROUTES.home);
       })
       .catch((error) => {

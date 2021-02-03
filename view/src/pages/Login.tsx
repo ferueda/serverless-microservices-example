@@ -1,8 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container, Heading, Text } from '@chakra-ui/react';
 import { Redirect, useHistory } from 'react-router-dom';
-import { logInWithEmailAndPassowrd } from '../services/firebase';
 import { ROUTES } from '../utils/constants';
+import { loginUser } from '../store/auth';
 
 import FormInput from '../components/Form/FormInput';
 import FormButton from '../components/Form/FormButton';
@@ -10,33 +11,27 @@ import Form from '../components/Form/Form';
 
 import Link from '../components/shared/Link';
 
-import { AuthContext } from '../globalState/AuthContext';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
 
 function Login() {
   const [email, setEmail] = useState<string>('f@f.cl');
   const [password, setPassword] = useState<string>('123123');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [user, setUser] = useContext(AuthContext);
+  const { user, status } = useSelector<AppState, AuthState>((state) => state.auth);
+  const dispatch = useDispatch();
+
   const history = useHistory();
 
-  const handleSubmit = (e: React.FormEvent<HTMLDivElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    setIsLoading(true);
-
-    logInWithEmailAndPassowrd(email, password)
-      .then((user) => {
-        setEmail('');
-        setPassword('');
-        setIsLoading(false);
-        setUser(user);
-        history.push(ROUTES.home);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
+    try {
+      await dispatch(loginUser(email, password));
+      history.push(ROUTES.home);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (user) {
@@ -77,7 +72,7 @@ function Login() {
           required
         />
 
-        <FormButton type="submit" isLoading={isLoading}>
+        <FormButton type="submit" isLoading={status === 'pending'}>
           Log in
         </FormButton>
 

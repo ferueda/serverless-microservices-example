@@ -1,28 +1,22 @@
-import { createContext, ReactNode, useState, useEffect, useContext } from 'react';
-import { getFavorites } from '../services/firebase';
-import { AuthContext } from './AuthContext';
-import type { Pokemon } from '../types/IPokemon';
+import { createContext, ReactNode, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFavoritePokemons } from '../store/favorites';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
 
 export const FavContext = createContext<any>(null);
 
 function FavContextProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<Pokemon[] | null>(null);
-
-  const [user] = useContext(AuthContext);
+  const { user } = useSelector<AppState, AuthState>((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!user) return;
 
-    getFavorites(user.uid)
-      .then((res) => {
-        const pokemons: Pokemon[] = [];
-        res.forEach((pokemon) => pokemons.push(pokemon.data() as Pokemon));
-        setFavorites(pokemons);
-      })
-      .catch((error) => console.error(error));
-  }, [user]);
+    dispatch(getFavoritePokemons(user.uid));
+  }, [user, dispatch]);
 
-  return <FavContext.Provider value={[favorites, setFavorites]}>{children}</FavContext.Provider>;
+  return <FavContext.Provider value={user}>{children}</FavContext.Provider>;
 }
 
 export default FavContextProvider;

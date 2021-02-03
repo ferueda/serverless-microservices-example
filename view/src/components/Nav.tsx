@@ -1,27 +1,28 @@
-import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from '../utils/constants';
 import { Box, Text, Icon } from '@chakra-ui/react';
 
 import NavLink from './shared/NavLink';
 
-import { AuthContext } from '../globalState/AuthContext';
-import { logOutCurrentUser } from '../services/firebase';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../store/auth';
 
 import { BsFillPersonFill } from 'react-icons/bs';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
 
 function Nav() {
-  const [user, setUser] = useContext<any>(AuthContext);
-
+  const { user } = useSelector<AppState, AuthState>((state) => state.auth);
+  const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleLogout = () => {
-    logOutCurrentUser()
-      .then(() => {
-        setUser(null);
-        history.push(ROUTES.login);
-      })
-      .catch((error) => console.log(error));
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+      history.push(ROUTES.login);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

@@ -13,7 +13,6 @@ function Home() {
 
   useEffect(() => {
     setIsLoading(true);
-
     getPokemons(offset)
       .then((res: any) => {
         setPokemons((oldState) => [...oldState, ...res.data]);
