@@ -8,8 +8,9 @@ import {
   GET_FAVORITES_FAILED,
   ADD_FAVORITE,
   Favorite,
+  REMOVE_FAVORITE,
 } from './types';
-import { getFavorites, addFavorite } from '../services/firebase';
+import { getFavorites, addFavorite, removeFavorite } from '../services/firebase';
 
 /* ACTIONS */
 
@@ -48,7 +49,21 @@ export function addFavoritePokemon(pokemon: Pokemon, uid: string) {
   };
 }
 
-/* RDUCER */
+export function removeFavoritePokemon(pokemonId: string, uid: string) {
+  return async (dispatch: Dispatch<FavoritesActionTypes>) => {
+    try {
+      await removeFavorite(pokemonId, uid);
+      dispatch({
+        type: REMOVE_FAVORITE,
+        payload: { pokemonId, uid },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
+
+/* REDUCER */
 const initialState: Favorites = [];
 
 export default function favoritesReducer(
@@ -67,6 +82,9 @@ export default function favoritesReducer(
 
     case ADD_FAVORITE:
       return [...state, { ...action.payload.pokemon, uid: action.payload.uid }];
+
+    case REMOVE_FAVORITE:
+      return state.filter((favorite) => String(favorite.id) !== action.payload.pokemonId);
 
     default:
       return state;
