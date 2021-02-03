@@ -1,15 +1,15 @@
-import { useHistory } from 'react-router-dom';
-import { ROUTES } from '../utils/constants';
-import { Box, Text, Icon } from '@chakra-ui/react';
-
-import NavLink from './shared/NavLink';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../store/auth';
-
+import { useHistory } from 'react-router-dom';
+import { Box, Text, Icon } from '@chakra-ui/react';
 import { BsFillPersonFill } from 'react-icons/bs';
+
+import { ROUTES } from '../utils/constants';
+
+import { logoutUser } from '../store/auth';
 import type { AppState } from '../store/store';
 import type { AuthState } from '../store/types';
+
+import NavLink from './shared/NavLink';
 
 function Nav() {
   const { user } = useSelector<AppState, AuthState>((state) => state.auth);
