@@ -1,8 +1,8 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { Pokemon } from '../types/IPokemon';
-import { IUserData, IDbUser, AuthedUser } from '../types/IUser';
+import type { Pokemon } from '../types/IPokemon';
+import type { IUserData, IDbUser, AuthedUser } from '../types/IUser';
 import { firebaseConfig } from '../utils/config';
 import { postNewUserToDb } from './api';
 
