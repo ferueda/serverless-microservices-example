@@ -1,36 +1,33 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import { Container, Heading, Text } from '@chakra-ui/react';
-import { ROUTES } from '../utils/constants';
-import { useSelector } from 'react-redux';
 
-import { signUpNewUserWithEmailAndPassword } from '../services/firebase';
+import { ROUTES } from '../utils/constants';
+
+import { signupUser } from '../store/auth';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
+import type { IUserData } from '../types/IUser';
 
 import FormInput from '../components/Form/FormInput';
 import FormButton from '../components/Form/FormButton';
 import Form from '../components/Form/Form';
-
 import Link from '../components/shared/Link';
-
-import type { IUserData } from '../types/IUser';
-import type { AppState } from '../store/store';
-import type { AuthState } from '../store/types';
 
 function SignUp() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { user } = useSelector<AppState, AuthState>((state) => state.auth);
+  const dispatch = useDispatch();
+  const { user, status } = useSelector<AppState, AuthState>((state) => state.auth);
 
   const history = useHistory();
 
-  const handleSubmit = (e: React.FormEvent<HTMLDivElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-
-    setIsLoading(true);
 
     const userData: IUserData = {
       email,
@@ -39,19 +36,8 @@ function SignUp() {
       last_name: lastName,
     };
 
-    signUpNewUserWithEmailAndPassword(userData)
-      .then((signedUpUser) => {
-        setEmail('');
-        setPassword('');
-        setFirstName('');
-        setLastName('');
-        setIsLoading(false);
-        history.push(ROUTES.home);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
+    await dispatch(signupUser(userData));
+    history.push(ROUTES.home);
   };
 
   if (user) {
@@ -110,7 +96,7 @@ function SignUp() {
           required
         />
 
-        <FormButton type="submit" isLoading={isLoading}>
+        <FormButton type="submit" isLoading={status === 'pending'}>
           Sign Up
         </FormButton>
 
