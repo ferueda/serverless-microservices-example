@@ -13,7 +13,7 @@ admin.initializeApp({
   projectId: PROJECT_ID,
 });
 
-async function getPlaces(req: Request, res: Response) {
+async function getPokemons(req: Request, res: Response) {
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
 
   if (req.method === 'OPTIONS') {
@@ -60,4 +60,4 @@ async function getPlaces(req: Request, res: Response) {
   }
 }
 
-export default getPlaces;
+export default getPokemons;
