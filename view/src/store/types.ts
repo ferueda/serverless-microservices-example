@@ -1,14 +1,16 @@
 /* AUTH TYPES*/
 
-export const LOGIN_USER_START = 'LOGIN_USER_START';
+export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGIN_USER_FAILED = 'LOGIN_USER_FAILED';
 export const SIGN_UP_USER = 'SIGN_UP_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
 
+type Status = 'idle' | 'pending' | 'resolved' | 'rejected';
+
 export interface AuthState {
   user: AuthedUser | null;
-  status: 'idle' | 'pending' | 'resolved' | 'rejected';
+  status: Status;
   error: null | string;
 }
 
@@ -20,8 +22,8 @@ export interface AuthedUser {
   authToken: string;
 }
 
-export interface LoginUserStartAction {
-  type: typeof LOGIN_USER_START;
+export interface AuthUserRequestAction {
+  type: typeof AUTH_REQUEST;
 }
 
 export interface LoginUserSuccessAction {
@@ -44,13 +46,17 @@ export interface LogoutUserAction {
 }
 
 export type AuthActionTypes =
-  | LoginUserStartAction
+  | AuthUserRequestAction
   | LoginUserSuccessAction
   | LoginUserFailedAction
   | SignUpUserAction
   | LogoutUserAction;
 
 /* POKEMON TYPES */
+
+export const GET_POKEMONS_START = 'GET_POKEMONS_START';
+export const GET_POKEMONS_SUCCESS = 'GET_POKEMONS_SUCCESS';
+export const GET_POKEMONS_FAILED = 'GET_POKEMONS_FAILED';
 
 export interface Pokemon {
   id: number;
@@ -59,6 +65,32 @@ export interface Pokemon {
   types: string[];
 }
 
+export interface PokemonState {
+  hasMore: boolean;
+  pokemons: Pokemon[];
+  status: Status;
+  offset: number;
+}
+
+export interface GetPokemonsStartAction {
+  type: typeof GET_POKEMONS_START;
+}
+
+export interface GetPokemonsSuccessAction {
+  type: typeof GET_POKEMONS_SUCCESS;
+  payload: { hasMore: boolean; pokemons: Pokemon[]; count: number };
+}
+
+export interface GetPokemonsFailedAction {
+  type: typeof GET_POKEMONS_FAILED;
+  payload: { error: string };
+}
+
+export type PokemonsActionTypes =
+  | GetPokemonsStartAction
+  | GetPokemonsSuccessAction
+  | GetPokemonsFailedAction;
+
 /* FAVORITE TYPES */
 
 export const GET_FAVORITES_START = 'GET_FAVORITES_START';
@@ -66,6 +98,7 @@ export const GET_FAVORITES_SUCCESS = 'GET_FAVORITES_SUCCESS';
 export const GET_FAVORITES_FAILED = 'GET_FAVORITES_FAILED';
 
 export const ADD_FAVORITE = 'ADD_FAVORITE';
+export const REMOVE_FAVORITE = 'REMOVE_FAVORITE';
 
 export interface Favorite extends Pokemon {
   uid: string;
@@ -92,8 +125,14 @@ export interface AddFavoriteAction {
   payload: { pokemon: Pokemon; uid: string };
 }
 
+export interface RemoveFavoriteAction {
+  type: typeof REMOVE_FAVORITE;
+  payload: { pokemonId: string; uid: string };
+}
+
 export type FavoritesActionTypes =
   | GetFavoritesStartAction
   | GetFavoritesSuccessAction
   | GetFavoritesFailedAction
-  | AddFavoriteAction;
+  | AddFavoriteAction
+  | RemoveFavoriteAction;
