@@ -1,13 +1,17 @@
 import type { Dispatch } from 'redux';
-import { AuthActionTypes, AuthState, LOGIN_USER_FAILED, LOGIN_USER_START } from './types';
+import { AuthActionTypes, AuthState, LOGIN_USER_FAILED, AUTH_REQUEST, SIGN_UP_USER } from './types';
 import { LOGIN_USER_SUCCESS, LOGOUT_USER } from './types';
-import { logInWithEmailAndPassowrd, logOutCurrentUser } from '../services/firebase';
+import {
+  logInWithEmailAndPassowrd,
+  logOutCurrentUser,
+  signUpNewUserWithEmailAndPassword,
+} from '../services/firebase';
 
 /* ACTIONS */
 
 export function loginUser(email: string, password: string) {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
-    dispatch({ type: LOGIN_USER_START });
+    dispatch({ type: AUTH_REQUEST });
     try {
       const authedUser = await logInWithEmailAndPassowrd(email, password);
       dispatch({
@@ -36,6 +40,26 @@ export function logoutUser() {
   };
 }
 
+export function signupUser(userData: {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+}) {
+  return async (dispatch: Dispatch<AuthActionTypes>) => {
+    dispatch({ type: AUTH_REQUEST });
+    try {
+      const authedUser = await signUpNewUserWithEmailAndPassword(userData);
+      dispatch({
+        type: SIGN_UP_USER,
+        payload: authedUser,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
+
 /* RDUCER */
 const initialState: AuthState = { user: null, status: 'idle', error: null };
 
@@ -44,7 +68,7 @@ export default function authReducer(
   action: AuthActionTypes,
 ): AuthState {
   switch (action.type) {
-    case LOGIN_USER_START:
+    case AUTH_REQUEST:
       return {
         user: null,
         status: 'pending',
@@ -59,6 +83,13 @@ export default function authReducer(
 
     case LOGOUT_USER:
       return { user: null, status: 'resolved', error: null };
+
+    case SIGN_UP_USER:
+      return {
+        user: action.payload,
+        error: null,
+        status: 'resolved',
+      };
 
     default:
       return state;
