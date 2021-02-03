@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Heading, Text } from '@chakra-ui/react';
 import { Redirect, useHistory } from 'react-router-dom';
+import { Container, Heading, Text } from '@chakra-ui/react';
+
 import { ROUTES } from '../utils/constants';
+
 import { loginUser } from '../store/auth';
+import type { AppState } from '../store/store';
+import type { AuthState } from '../store/types';
 
 import FormInput from '../components/Form/FormInput';
 import FormButton from '../components/Form/FormButton';
 import Form from '../components/Form/Form';
-
 import Link from '../components/shared/Link';
-
-import type { AppState } from '../store/store';
-import type { AuthState } from '../store/types';
 
 function Login() {
   const [email, setEmail] = useState<string>('f@f.cl');
